@@ -138,10 +138,18 @@ if __name__ == '__main__':
      # stack = Stack()
      #  stack.push((m.ply.x,m.ply.y)) 
     while True : 
-     if m.move_up() and m.maze[m.ply.y-1] != "X":
-      m.print()
-     else :
-        break
+     if m.maze[m.ply.y-1][m.ply.x] != "X":
+       m.move_up()
+       m.print()
+       
+     elif m.maze[m.ply.y][m.ply.x+1] != "X":
+       m.move_right()
+       m.print()
+
+    #  elif m.move_down and m.maze[m.ply.y-1] == "X" :
+    #   m.maze[m.ply.y-1] = "X"
+    #   m.print()
+    #   break
         
 
 
