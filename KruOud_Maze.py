@@ -2,6 +2,38 @@ import os
 import keyboard
 import time
 
+class Stack:
+
+    def __init__(self):
+        self._top = None
+        self._size = 0
+
+    def isEmpty(self):
+        return self._top is None
+    
+    def __len__(self):
+        return self._size
+    
+    def peek(self):
+        assert not self.isEmpty(), "Cannot peek at an empty stack"
+        return self._top.item
+
+    def pop(self):
+        assert not self.isEmpty(), "Cannot pop from an empty stack"
+        node = self._top
+        self._top = self._top.next
+        self._size = self._size - 1
+        return node.item
+
+    def push(self, item):
+        self._top = _StackNode(item, self._top)
+        self._size = self._size + 1
+
+class _StackNode:
+    def __init__(self, item, link):
+        self.item = item
+        self.next = link
+
 class maze:
     def __init__(self) -> None:
         self.maze = [
@@ -90,7 +122,7 @@ class maze:
                 self.printEND()
                 return False
         return True
-
+        
 class pos:
     def __init__(self) -> None:
         self.y = None
@@ -101,31 +133,16 @@ class pos:
         self.x = x
 
 if __name__ == '__main__':
-
     m = maze()
     m.print()
+     # stack = Stack()
+     #  stack.push((m.ply.x,m.ply.y)) 
+    while True : 
+     if m.move_up() and m.maze[m.ply.y-1] != "X":
+      m.print()
+     else :
+        break
+        
 
-    while True:
-        if keyboard.is_pressed("q"):
-            print("Quit Program")
-            break
-        if keyboard.is_pressed("w"):
-            if m.move_up():
-                m.print()
-            else:
-                break
-        if keyboard.is_pressed("s"):
-            if m.move_down():
-                m.print()
-            else:
-                break
-        if keyboard.is_pressed("a"):
-            if m.move_left():
-                m.print()
-            else:
-                break
-        if keyboard.is_pressed("d"):
-            if m.move_right():
-                m.print()
-            else:
-                break
+
+
