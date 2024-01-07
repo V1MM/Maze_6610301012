@@ -1,6 +1,7 @@
 import os
 import keyboard
 import time
+import sys 
 
 mytime = 0.2
 class Stack:
@@ -36,9 +37,7 @@ class _StackNode:
         self.next = link
 
 class maze:
-    def __str__(self) -> str:
-        print(f'{self.ply}')
-
+ 
     def __init__(self) -> None:
         self.maze = [
                     ["X", "X", "X", "X", "X", "X", "X"],
@@ -73,9 +72,8 @@ class maze:
         print("\n\n\n")
         print(">>>>> Congraturation!!! <<<<<")
         print("\n\n\n")
-        input()
-        
-        
+        sys.exit()
+
 
     def move_up(self):
         next_move = pos(self.ply.y-1, self.ply.x)
@@ -93,7 +91,7 @@ class maze:
     def move_down(self):
         next_move = pos(self.ply.y + 1, self.ply.x)
         if self.isInBound(next_move.y, next_move.x):
-            if self.maze[next_move.y][next_move.x] == " ":
+            if self.maze[next_move.y][next_move.x] == (" "):
                 self.maze[self.ply.y][self.ply.x] = " "
                 self.maze[next_move.y][next_move.x] = "P"
                 self.ply = next_move
@@ -138,76 +136,93 @@ class pos:
         self.y = y
         self.x = x
 
+    def __str__ (self) -> str:
+        return f"Pos(x={self.y}, y={self.x})"
+    
 if __name__ == '__main__':
     m = maze()
     m.print()
     stack = Stack()
     visited = set()
-    
-    while True : 
-     if m.maze[m.ply.y-1][m.ply.x] != "X" and (m.ply.y-1,m.ply.x) not in visited :  
-       stack.push((m.ply.y,m.ply.x)) 
-       visited.add((m.ply.y-1, m.ply.x))
-       current_pos = stack.peek()
-       m.move_up()
-       m.print()  
-       input()
-       print((current_pos),(visited))
-       print("MOVE_UP")
-           
-     elif m.maze[m.ply.y+1][m.ply.x] != "X" and (m.ply.y+1,m.ply.x) not in visited  :
-       stack.push((m.ply.y,m.ply.x))
-       visited.add((m.ply.y+1, m.ply.x))  
-       current_pos = stack.peek()
-       m.move_down()
-       m.print()
-       input()
-       print((current_pos),(visited))
-       print("MOVE_DOWN")
 
-     elif m.maze[m.ply.y][m.ply.x+1] != "X" and (m.ply.y,m.ply.x+1) not in visited  :
-       stack.push((m.ply.y,m.ply.x)) 
-       visited.add((m.ply.y, m.ply.x+1))
-       current_pos = stack.peek()
-       m.move_right()
-       m.print()
-       input()
-       print((current_pos),(visited))
-       print("MOVE_RIGHT")
+    print(m.ply)
+    print("START")
+    input()
 
-     elif m.maze[m.ply.y][m.ply.x-1] != "X" and (m.ply.y,m.ply.x-1) not in visited :
-       stack.push((m.ply.y,m.ply.x)) 
-       visited.add((m.ply.y, m.ply.x-1))
-       current_pos = stack.peek()
-       m.move_left()
-       m.print()
-       input()
-       print((current_pos),(visited))   
-       print("MOVE_LEFT")
+    while True:
+        current_pos = (m.ply.y, m.ply.x)
 
-     elif stack.peek() in visited and m.ply != m.end :
-        lastmove = stack.pop()
-        stack.push((m.ply.y,m.ply.x)) 
-        current_pos = stack.peek()
-        print(lastmove, current_pos,m.ply)
-        input()
-        m.maze[current_pos[0]][current_pos[1]] = "O"
-        m.print()
-        visited.remove(lastmove)
+        if current_pos not in visited:
+            visited.add(current_pos)
+
+            if m.maze[m.ply.y - 1][m.ply.x] != "X" and (m.ply.y - 1, m.ply.x) not in visited:
+                m.move_up()
+                m.print()
+                stack.push(current_pos)
+                print((m.ply), (current_pos), (visited))
+                print("MOVE_UP")
+            #    input()
+
+            elif m.maze[m.ply.y + 1][m.ply.x] != "X" and (m.ply.y + 1, m.ply.x) not in visited:
+                m.move_down()
+                m.print()
+                stack.push(current_pos)
+                print((m.ply), (current_pos), (visited))
+                print("MOVE_DOWN")
+            #    input()
+
+            elif m.maze[m.ply.y][m.ply.x + 1] != "X" and (m.ply.y, m.ply.x + 1) not in visited:
+                m.move_right()
+                m.print()
+                stack.push(current_pos)
+                print((m.ply), (current_pos), (visited))
+                print("MOVE_RIGHT")
+            #    input()
+
+            elif m.maze[m.ply.y][m.ply.x - 1] != "X" and (m.ply.y, m.ply.x - 1) not in visited:
+                m.move_left()
+                m.print()
+                stack.push(current_pos)
+                print((m.ply), (current_pos), (visited))
+                print("MOVE_LEFT")
+              #  input()
+
+            else:
+                print("Dead End! Trying to find a way to escape...")
+                escape_successful = False
+
+                while not stack.isEmpty():
+                    lastmove = stack.pop()
+                    m.ply = pos(lastmove[0], lastmove[1])
+                    m.print()
+                    print("Trying to escape from", (current_pos))
+                    input()
+
+                    # Try different directions
+                    if m.maze[m.ply.y - 1][m.ply.x] != "X" and (m.ply.y - 1, m.ply.x) not in visited:
+                        m.move_up()
+                        escape_successful = True
+                        break
+
+                    elif m.maze[m.ply.y + 1][m.ply.x] != "X" and (m.ply.y + 1, m.ply.x) not in visited:
+                        m.move_down()
+                        escape_successful = True
+                        break
+
+                    elif m.maze[m.ply.y][m.ply.x + 1] != "X" and (m.ply.y, m.ply.x + 1) not in visited:
+                        m.move_right()
+                        escape_successful = True
+                        break
+
+                    elif m.maze[m.ply.y][m.ply.x - 1] != "X" and (m.ply.y, m.ply.x - 1) not in visited:
+                        m.move_left()
+                        escape_successful = True
+                        break
+
+                if not escape_successful:
+                    print("No escape possible! Exiting.")
+                    break
 
 
-    #  else:
-    #   print("Backtracking")
 
-    #   if not stack.isEmpty():
-    #     lastmove = stack.pop()
-    #     m.ply = pos(lastmove[0], lastmove[1])
-    #     m.maze[lastmove[0],]
-
-    #     if m.ply == m.end:
-    #         m.printEND()
-    #         break
-    #   else:
-    #      print("NO MORE MOVE ")
-    #      break
 
