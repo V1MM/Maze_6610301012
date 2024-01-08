@@ -3,7 +3,7 @@ import keyboard
 import time
 import sys 
 
-mytime = 0.2
+mytime = 1
 class Stack:
 
     def __init__(self):
@@ -149,12 +149,12 @@ if __name__ == '__main__':
     input()
 
     while True:
-        current_pos = (m.ply.y, m.ply.x)
-        m.ply = pos(current_pos[0],current_pos[1])
-        if current_pos not in visited:
-            visited.add(current_pos)
+        current_pos = (m.ply.y, m.ply.x) # เก็บค่าปัจจุบันในแบบ Tuple 
+        m.ply = pos(current_pos[0],current_pos[1]) # unpack ค่า และ update ค่า ที่ตัวหุ่นยนต์
+        if current_pos not in visited: # ถ้าค่าปัจจุบัน ไม่มีใน จุดที่เคยไปแล้ว
+            visited.add(current_pos) # เก็บค่าปัจจุบันใส่ไว้จุดที่เคยไปแล้ว
             
-            if m.maze[m.ply.y - 1][m.ply.x] != "X" and (m.ply.y - 1, m.ply.x) not in visited:
+            if m.maze[m.ply.y - 1][m.ply.x] != "X" and (m.ply.y - 1, m.ply.x) not in visited: #ถ้าทางเดินข้างบน ไม่เท่ากับกำแพง และ ทางเดินข้างบนยังไม่เคยไป 
                 m.move_up()
                 m.print()
                 stack.push(current_pos)
@@ -162,7 +162,7 @@ if __name__ == '__main__':
                 print("MOVE_UP")    
             #    input()
 
-            elif m.maze[m.ply.y + 1][m.ply.x] != "X" and (m.ply.y + 1, m.ply.x) not in visited:
+            elif m.maze[m.ply.y + 1][m.ply.x] != "X" and (m.ply.y + 1, m.ply.x) not in visited: #ถ้าทางเดินข้างล่าง ไม่เท่ากับกำแพง และ ทางเดินข้างล่างยังไม่เคยไป 
                 m.move_down()
                 m.print()
                 stack.push(current_pos)
@@ -170,7 +170,7 @@ if __name__ == '__main__':
                 print("MOVE_DOWN")
             #    input()
 
-            elif m.maze[m.ply.y][m.ply.x + 1] != "X" and (m.ply.y, m.ply.x + 1) not in visited:
+            elif m.maze[m.ply.y][m.ply.x + 1] != "X" and (m.ply.y, m.ply.x + 1) not in visited: #ถ้าทางเดินข้างขวา ไม่เท่ากับกำแพง และ ทางเดินข้างขวายังไม่เคยไป 
                 m.move_right()
                 m.print()
                 stack.push(current_pos)
@@ -178,7 +178,7 @@ if __name__ == '__main__':
                 print("MOVE_RIGHT")
             #    input()
 
-            elif m.maze[m.ply.y][m.ply.x - 1] != "X" and (m.ply.y, m.ply.x - 1) not in visited:
+            elif m.maze[m.ply.y][m.ply.x - 1] != "X" and (m.ply.y, m.ply.x - 1) not in visited: #ถ้าทางเดินข้างซ้าย ไม่เท่ากับกำแพง และ ทางเดินข้างซ้ายยังไม่เคยไป 
                 m.move_left()
                 m.print()
                 stack.push(current_pos)
@@ -186,19 +186,17 @@ if __name__ == '__main__':
                 print("MOVE_LEFT")
               #  input()
 
-            else:
+            else:                                                                 #เมื่อ หุ่นยนต์ไม่สามารถหาทางไปได้ ทั้ง 4 ทิศ หมายความว่า หุ่นยนต์ เจอทางตัน
                 print("Dead End! Moving back and marking 'O'...")
+                Deadend = True  # เจอทางตันอยู่
 
-                Deadend = True
-
-                while not stack.isEmpty() and Deadend == True : # and m.maze[m.ply.y][m.ply.x] == "P" :
-                    lastmove = stack.pop()
+                while not stack.isEmpty() and Deadend == True : 
+                    lastmove = stack.pop() # เอาค่าการเดินล่าสุด
                     print(lastmove)
-                    visited.remove(lastmove)
-                    m.maze[current_pos[0]][current_pos[1]] = "O"
+                    visited.remove(lastmove) # ลบค่าการเดินล่าสุด ในจุดที่เคยมาแล้ว
+                    m.maze[current_pos[0]][current_pos[1]] = "O" #ใส่เครื่อง O ตรงทางตัน
                     m.ply = pos(lastmove[0],lastmove[1])
                     m.maze[m.ply.y][m.ply.x] = "P"
                     m.print()
                     print(m.maze)
-                    Deadend = False
-                    input()
+                    Deadend = False #ไม่เจอทางตันแล้ว
