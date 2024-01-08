@@ -41,8 +41,8 @@ class maze:
     def __init__(self) -> None:
         self.maze = [
                     ["X", "X", "X", "X", "X", "X", "X"],
-                    ["X", " ", " ", " ", "X", " ", "X"],
-                    ["X", " ", "X", " ", "X", " ", " "],
+                    ["X", " ", "X", " ", "X", " ", "X"],
+                    ["X", " ", " ", " ", "X", " ", " "],
                     ["X", " ", "X", " ", "X", " ", "X"],
                     ["X", " ", "X", " ", " ", " ", "X"],
                     ["X", " ", "X", "X", "X", "X", "X"],
@@ -144,23 +144,22 @@ if __name__ == '__main__':
     m.print()
     stack = Stack()
     visited = set()
-
     print(m.ply)
     print("START")
     input()
 
     while True:
         current_pos = (m.ply.y, m.ply.x)
-
+        m.ply = pos(current_pos[0],current_pos[1])
         if current_pos not in visited:
             visited.add(current_pos)
-
+            
             if m.maze[m.ply.y - 1][m.ply.x] != "X" and (m.ply.y - 1, m.ply.x) not in visited:
                 m.move_up()
                 m.print()
                 stack.push(current_pos)
                 print((m.ply), (current_pos), (visited))
-                print("MOVE_UP")
+                print("MOVE_UP")    
             #    input()
 
             elif m.maze[m.ply.y + 1][m.ply.x] != "X" and (m.ply.y + 1, m.ply.x) not in visited:
@@ -188,41 +187,18 @@ if __name__ == '__main__':
               #  input()
 
             else:
-                print("Dead End! Trying to find a way to escape...")
-                escape_successful = False
+                print("Dead End! Moving back and marking 'O'...")
 
-                while not stack.isEmpty():
+                Deadend = True
+
+                while not stack.isEmpty() and Deadend == True : # and m.maze[m.ply.y][m.ply.x] == "P" :
                     lastmove = stack.pop()
-                    m.ply = pos(lastmove[0], lastmove[1])
+                    print(lastmove)
+                    visited.remove(lastmove)
+                    m.maze[current_pos[0]][current_pos[1]] = "O"
+                    m.ply = pos(lastmove[0],lastmove[1])
+                    m.maze[m.ply.y][m.ply.x] = "P"
                     m.print()
-                    print("Trying to escape from", (current_pos))
+                    print(m.maze)
+                    Deadend = False
                     input()
-
-                    # Try different directions
-                    if m.maze[m.ply.y - 1][m.ply.x] != "X" and (m.ply.y - 1, m.ply.x) not in visited:
-                        m.move_up()
-                        escape_successful = True
-                        break
-
-                    elif m.maze[m.ply.y + 1][m.ply.x] != "X" and (m.ply.y + 1, m.ply.x) not in visited:
-                        m.move_down()
-                        escape_successful = True
-                        break
-
-                    elif m.maze[m.ply.y][m.ply.x + 1] != "X" and (m.ply.y, m.ply.x + 1) not in visited:
-                        m.move_right()
-                        escape_successful = True
-                        break
-
-                    elif m.maze[m.ply.y][m.ply.x - 1] != "X" and (m.ply.y, m.ply.x - 1) not in visited:
-                        m.move_left()
-                        escape_successful = True
-                        break
-
-                if not escape_successful:
-                    print("No escape possible! Exiting.")
-                    break
-
-
-
-
